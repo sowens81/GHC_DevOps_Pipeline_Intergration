@@ -1,0 +1,78 @@
+  
+# Azure DevOps Pipeline that Run PR to enable branching policies in GitHub Enterprise
+# Branching Stratergy - Trunk
+
+trigger:
+- Dev 
+- Main
+- Release/* = Full Build (with Release Artificat)
+
+
+pr:
+- Dev
+
+
+variables:
+  isMain: $[eq(variables['Build.SourceBranch'], 'refs/heads/main')]
+  isPR: $[eq(variables['Build.Reason'], 'PullRequest')]
+
+stages:
+- stage: Continous_Intergration
+  jobs: 
+  - job: CI_PR_Buld_Validation
+    condition: and(succeeded(), eq(variables.isPR, true))
+    pool:
+      vmImage: windows-2019
+    steps:
+    - task: PowerShell@2
+      inputs:
+        targetType: inline
+        script: 'Write-Host "Run PR Validation Steps"'
+        failOnStderr: false
+  - job: CI_Build_Artifact
+    condition: and(succeeded(), eq(variables.isMain, true))
+    pool:
+      vmImage: windows-2019
+    steps:
+    - task: PowerShell@2
+      inputs:
+        targetType: inline
+        script: 'Write-Host "Run build Artifact steps"'
+        failOnStderr: false
+
+
+- stage: Continous_Deployment_Dev
+  jobs: 
+  - deployment: CD_Dev
+    displayName: Deploy to Development Environment
+    condition: and(succeeded(), eq(variables.isMain, true))
+    pool:
+      vmImage: windows-2019
+    environment: "SO-Demo-Dev"
+    stratergy:
+      runOnce:
+        deploy:
+          steps:
+          - task: PowerShell@2
+            inputs:
+              targetType: inline
+              script: 'Write-Host "Deploy to Production"'
+              failOnStderr: false
+
+- stage: Continous_Deployment_Prod
+  jobs: 
+  - deployment: CD_Prod
+    displayName: Deploy to Production Environment
+    condition: and(succeeded(), eq(variables.isMain, true))
+    pool:
+      vmImage: windows-2019
+    environment: "SO-Demo-Prod"
+    stratergy:
+      runOnce:
+        deploy:
+          steps:
+          - task: PowerShell@2
+            inputs:
+              targetType: inline
+              script: 'Write-Host "Deploy to Production"'
+              failOnStderr: false
