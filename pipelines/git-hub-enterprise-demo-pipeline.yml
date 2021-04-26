@@ -1,6 +1,6 @@
   
 # Azure DevOps Pipeline that Run PR to enable branching policies in GitHub Enterprise
-
+# Branching Stratergy - Trunk
 
 trigger:
 - Main
@@ -25,7 +25,7 @@ stages:
         targetType: inline
         script: 'Write-Host "Run PR Validation Steps"'
         failOnStderr: false
-  - job: CI_Build
+  - job: CI_Build_Artifact
     condition: and(succeeded(), eq(variables.isMain, true))
     pool:
       vmImage: windows-2019
