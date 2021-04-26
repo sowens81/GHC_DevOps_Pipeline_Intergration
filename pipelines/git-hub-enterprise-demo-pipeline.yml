@@ -12,42 +12,39 @@ variables:
   isMain: $[eq(variables['Build.SourceBranch'], 'refs/heads/main')]
   isPR: $[eq(variables['Build.Reason'], 'PullRequest']
 
-Stages:
-- Stage: Continous Intergration
-  Jobs: 
-  - Job: CI - PR Validation
+stages:
+- stage: Continous Intergration
+  jobs: 
+  - job: CI-PR-Buld-Validation
     condition: and(succeeded(), eq(variables.isPR, true))
-    Pool:
+    pool:
       vmImage:"ubuntu-latest"
-    Steps:
+    steps:
     - task: Bash@3
       inputs:
         targetType: inline
         script: 'echo "Run PR Validation Steps"'
         failOnStderr: false
-  - Job: CI - Build and Package Artifact
+  - job: CI-Build
     condition: and(succeeded(), eq(variables.isMain, true))
-    Pool:
+    pool:
       vmImage:"ubuntu-latest"
-    Steps:
+    steps:
     - task: Bash@3
       inputs:
         targetType: inline
-        script: 'echo "Run Dev build Artifact steps"'
+        script: 'echo "Run build Artifact steps"'
         failOnStderr: false
 
-- Stage: Continous Deployment - Production
-  Jobs: 
-  - Job: Continous Deployment - Production
+- stage: Continous Deployment - Production
+  jobs: 
+  - job: "CD-Production"
     condition: and(succeeded(), eq(variables.isMain, true))
-    Pool:
+    pool:
       vmImage:"ubuntu-latest"
-    Steps:
+    steps:
     - task: Bash@3
       inputs:
         targetType: inline
         script: 'echo "Deploy to Production"'
         failOnStderr: false
-
-
-
