@@ -46,7 +46,7 @@ Stages:
     - task: Bash@3
       inputs:
         targetType: inline
-        script: 'echo "Run PR Validation Steps"'
+        script: 'echo "Deploy to Production"'
         failOnStderr: false
 
 
