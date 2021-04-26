@@ -1,0 +1,53 @@
+  
+# Azure DevOps Pipeline that Run PR to enable branching policies in GitHub Enterprise
+
+
+trigger:
+- Main
+
+pr:
+- Main
+
+variables:
+  isMain: $[eq(variables['Build.SourceBranch'], 'refs/heads/main')]
+  isPR: $[eq(variables['Build.Reason'], 'PullRequest']
+
+Stages:
+- Stage: Continous Intergration
+  Jobs: 
+  - Job: CI - PR Validation
+    condition: and(succeeded(), eq(variables.isPR, true))
+    Pool:
+      vmImage:"ubuntu-latest"
+    Steps:
+    - task: Bash@3
+      inputs:
+        targetType: inline
+        script: 'echo "Run PR Validation Steps"'
+        failOnStderr: false
+  - Job: CI - Build and Package Artifact
+    condition: and(succeeded(), eq(variables.isMain, true))
+    Pool:
+      vmImage:"ubuntu-latest"
+    Steps:
+    - task: Bash@3
+      inputs:
+        targetType: inline
+        script: 'echo "Run Dev build Artifact steps"'
+        failOnStderr: false
+
+- Stage: Continous Deployment - Production
+  Jobs: 
+  - Job: Continous Deployment - Production
+    condition: and(succeeded(), eq(variables.isMain, true))
+    Pool:
+      vmImage:"ubuntu-latest"
+    Steps:
+    - task: Bash@3
+      inputs:
+        targetType: inline
+        script: 'echo "Run PR Validation Steps"'
+        failOnStderr: false
+
+
+
