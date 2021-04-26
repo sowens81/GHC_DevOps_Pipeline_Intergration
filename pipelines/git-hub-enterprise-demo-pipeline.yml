@@ -38,7 +38,7 @@ stages:
 
 - stage: Continous_Deployment_Production
   jobs: 
-  - job: "CD_roduction"
+  - job: "CD_Production"
     condition: and(succeeded(), eq(variables.isMain, true))
     pool:
       vmImage: windows-2019
