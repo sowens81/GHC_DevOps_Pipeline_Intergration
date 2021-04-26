@@ -13,9 +13,9 @@ variables:
   isPR: $[eq(variables['Build.Reason'], 'PullRequest')]
 
 stages:
-- stage: Continous Intergration
+- stage: Continous_Intergration
   jobs: 
-  - job: CI-PR-Buld-Validation
+  - job: CI_PR_Buld_Validation
     condition: and(succeeded(), eq(variables.isPR, true))
     pool:
       vmImage:"ubuntu-latest"
@@ -25,7 +25,7 @@ stages:
         targetType: inline
         script: 'echo "Run PR Validation Steps"'
         failOnStderr: false
-  - job: CI-Build
+  - job: CI_Build
     condition: and(succeeded(), eq(variables.isMain, true))
     pool:
       vmImage:"ubuntu-latest"
@@ -36,9 +36,9 @@ stages:
         script: 'echo "Run build Artifact steps"'
         failOnStderr: false
 
-- stage: Continous Deployment - Production
+- stage: Continous_Deployment_Production
   jobs: 
-  - job: "CD-Production"
+  - job: "CD_roduction"
     condition: and(succeeded(), eq(variables.isMain, true))
     pool:
       vmImage:"ubuntu-latest"
