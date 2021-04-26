@@ -3,10 +3,14 @@
 # Branching Stratergy - Trunk
 
 trigger:
+- Dev 
 - Main
+- Release/* = Full Build (with Release Artificat)
+
 
 pr:
-- Main
+- Dev
+
 
 variables:
   isMain: $[eq(variables['Build.SourceBranch'], 'refs/heads/main')]
